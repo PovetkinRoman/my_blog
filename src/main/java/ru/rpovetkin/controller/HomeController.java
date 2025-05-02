@@ -7,6 +7,11 @@ import org.springframework.web.bind.annotation.ResponseBody;
 @Controller
 public class HomeController {
 
+    @GetMapping("/")
+    public String redirectToPosts() {
+        return "redirect:/posts";
+    }
+
     @GetMapping("/home")
     @ResponseBody
     public String homePage() {
