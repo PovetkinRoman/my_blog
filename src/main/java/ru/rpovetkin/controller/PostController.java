@@ -3,9 +3,11 @@ package ru.rpovetkin.controller;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import ru.rpovetkin.model.Paging;
 import ru.rpovetkin.model.Post;
+import ru.rpovetkin.service.PostService;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -14,6 +16,12 @@ import java.util.List;
 @Controller
 @RequestMapping("/posts")
 public class PostController {
+
+    private final PostService postService;
+
+    public PostController(PostService postService) {
+        this.postService = postService;
+    }
 
     @GetMapping
     public String posts(Model model) {
@@ -32,6 +40,13 @@ public class PostController {
         model.addAttribute("search", "");
         model.addAttribute("paging", paging);
 
-        return "posts"; // Возвращаем название шаблона — users.html
+        return "posts";
+    }
+
+    @GetMapping(value = "/{id}")
+    public String post(@PathVariable(name = "id") Long id, Model model) {
+        Post post = postService.getPost(id).get();
+        model.addAttribute("post", post);
+        return "post";
     }
 }
