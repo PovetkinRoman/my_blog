@@ -9,7 +9,7 @@
 <a href="/posts" style="float:right;">
     <b>НА ГЛАВНУЮ &cudarrr;</b>
 </a>
-<form method="POST" th:action="${post==null ? '/posts' : '/posts/'+post.getId()}" enctype="multipart/form-data">
+<form method="POST" th:action="${post==null ? '/my-blog/posts' : '/my-blog/posts/'+post.getId()}" enctype="multipart/form-data">
     <table style="width:50%;margin-left:auto;margin-right:auto;">
         <tr>
             <td>

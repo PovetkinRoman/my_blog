@@ -9,8 +9,6 @@ import ru.rpovetkin.model.Paging;
 import ru.rpovetkin.model.Post;
 import ru.rpovetkin.service.PostService;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 @Controller
@@ -25,21 +23,13 @@ public class PostController {
 
     @GetMapping
     public String posts(Model model) {
-        List<String> comments = new ArrayList<>();
-        comments.add("first comment");
-        comments.add("second comment");
-        List<Post> posts = Arrays.asList(
-                new Post(1L, "Title1", "TextPreview1", "path1", 1, comments),
-                new Post(2L, "Title2", "TextPreview2", "path2", 2, comments),
-                new Post(3L, "Title3", "TextPreview3", "path3", 3, comments)
-        );
+        List<Post> posts = postService.getAllPosts();
+        model.addAttribute("posts", posts);
 
         Paging paging = new Paging(1, 5, false, false);
-        // Передаём данные в виде атрибута posts
-        model.addAttribute("posts", posts);
-        model.addAttribute("search", "");
         model.addAttribute("paging", paging);
 
+        model.addAttribute("search", "");
         return "posts";
     }
 
@@ -48,5 +38,10 @@ public class PostController {
         Post post = postService.getPost(id).get();
         model.addAttribute("post", post);
         return "post";
+    }
+
+    @GetMapping(value = "/add")
+    public String post(Model model) {
+        return "add-post";
     }
 }
