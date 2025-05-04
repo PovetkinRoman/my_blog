@@ -3,9 +3,10 @@ package ru.rpovetkin.controller.model;
 import ru.rpovetkin.repository.entity.Post;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 public record PostDto(Long id, String title, String text, String imagePath, Integer likesCount,
-                      List<CommentDto> comments) {
+                      List<CommentDto> comments, List<TagsDto> tags, String tagsAsText) {
     public PostDto(Post post) {
         this(
                 post.getId(),
@@ -15,7 +16,11 @@ public record PostDto(Long id, String title, String text, String imagePath, Inte
                 post.getLikesCount(),
                 post.getComments().stream()
                         .map(comment -> new CommentDto(comment.getId(), comment.getPost(), comment.getText()))
-                        .toList()
+                        .toList(),
+                post.getTags().stream()
+                        .map(tag -> new TagsDto(tag.getId(), tag.getPost(), tag.getName()))
+                        .toList(),
+                post.getTags().stream().map(tag -> "#" + tag.getName()).collect(Collectors.joining(" "))
         );
     }
 }

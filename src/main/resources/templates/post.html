@@ -73,9 +73,9 @@
                         <span th:text="${'комментарии '+post.comments().size()}" style="float:right;"></span>
                     </form>
                 </p>
-<!--                <p>-->
-<!--                    <span th:each="tag : ${post.getTags()}" th:text="${'#'+tag+' '}"></span>-->
-<!--                </p>-->
+                <p>
+                    <span th:each="tag : ${post.tags()}" th:text="${'#'+tag.name+' '}"></span>
+                </p>
             </td>
         </tr>
         <tr th:each="textPart : ${post.text()}">
