@@ -1,25 +1,30 @@
 package ru.rpovetkin.service;
 
 import org.springframework.stereotype.Service;
-import ru.rpovetkin.model.Post;
+import ru.rpovetkin.controller.model.PostDto;
 import ru.rpovetkin.repository.PostRepository;
+import ru.rpovetkin.repository.entity.Post;
 
 import java.util.List;
-import java.util.Optional;
+import java.util.logging.Logger;
 
 @Service
 public class PostService {
+    private static final Logger log = Logger.getLogger(PostService.class.getName());
+
     private final PostRepository postRepository;
 
     public PostService(PostRepository postRepository) {
         this.postRepository = postRepository;
     }
 
-    public List<Post> getAllPosts() {
-        return postRepository.findAll();
+    public List<PostDto> getAllPosts() {
+        List<Post> allPost = postRepository.findAll();
+        return allPost.stream().map(PostDto::new).toList();
     }
 
-    public Optional<Post> getPost(Long id) {
-        return postRepository.findById(id);
+    public PostDto getPost(Long id) {
+        Post post = postRepository.findById(id).get();
+        return new PostDto(post);
     }
 }

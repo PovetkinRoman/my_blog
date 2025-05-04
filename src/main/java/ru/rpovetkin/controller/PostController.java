@@ -2,18 +2,20 @@ package ru.rpovetkin.controller;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import ru.rpovetkin.model.Paging;
-import ru.rpovetkin.model.Post;
+import org.springframework.web.bind.annotation.*;
+import ru.rpovetkin.controller.model.PostDto;
+import ru.rpovetkin.repository.entity.Paging;
 import ru.rpovetkin.service.PostService;
 
 import java.util.List;
+import java.util.logging.Logger;
 
 @Controller
 @RequestMapping("/posts")
 public class PostController {
+
+    private static final Logger log = Logger.getLogger(PostController.class.getName());
+
 
     private final PostService postService;
 
@@ -22,8 +24,8 @@ public class PostController {
     }
 
     @GetMapping
-    public String posts(Model model) {
-        List<Post> posts = postService.getAllPosts();
+    public String getAllPost(Model model) {
+        List<PostDto> posts = postService.getAllPosts();
         model.addAttribute("posts", posts);
 
         Paging paging = new Paging(1, 5, false, false);
@@ -35,7 +37,7 @@ public class PostController {
 
     @GetMapping(value = "/{id}")
     public String post(@PathVariable(name = "id") Long id, Model model) {
-        Post post = postService.getPost(id).get();
+        PostDto post = postService.getPost(id);
         model.addAttribute("post", post);
         return "post";
     }
@@ -44,4 +46,12 @@ public class PostController {
     public String post(Model model) {
         return "add-post";
     }
+
+//    @PostMapping
+//    public String save(@ModelAttribute Post post) {
+//        postService.save(post);
+//        return "redirect:/posts"; // Возвращаем страницу, чтобы она перезагрузилась
+//    }
+
+
 }
