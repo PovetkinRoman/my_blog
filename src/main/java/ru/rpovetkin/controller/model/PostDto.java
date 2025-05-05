@@ -2,6 +2,7 @@ package ru.rpovetkin.controller.model;
 
 import org.springframework.web.multipart.MultipartFile;
 import ru.rpovetkin.repository.entity.Post;
+import ru.rpovetkin.repository.entity.Tag;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -22,8 +23,8 @@ public record PostDto(Long id, String title, String text, String imagePath, Inte
                         .map(tag -> new TagsDto(tag.getId(), tag.getPost(), tag.getName()))
                         .toList(),
                 post.getTags().stream()
-                        .map(tag -> "#" + tag.getName())
-                        .collect(Collectors.joining(" ")),
+                        .map(Tag::getName)
+                        .collect(Collectors.joining(",")),
                 null
         );
     }

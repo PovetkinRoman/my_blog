@@ -7,14 +7,11 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import ru.rpovetkin.controller.model.PostDto;
 import ru.rpovetkin.repository.entity.Paging;
-import ru.rpovetkin.repository.entity.Tag;
 import ru.rpovetkin.service.PostService;
 
 import java.io.IOException;
-import java.util.Arrays;
 import java.util.List;
 import java.util.logging.Logger;
-import java.util.stream.Collectors;
 
 @Controller
 @RequestMapping("/posts")
@@ -28,15 +25,19 @@ public class PostController {
         this.postService = postService;
     }
 
-    @GetMapping()
-    public String getAllPost(Model model) {
-        List<PostDto> posts = postService.getAllPosts();
+    @GetMapping
+    public String getAllPost(
+            @RequestParam(value = "search", defaultValue = "") String search,
+            @RequestParam(value = "pageSize", defaultValue = "10") Integer pageSize,
+            @RequestParam(value = "pageNumber", defaultValue = "1") Integer pageNumber,
+            Model model) {
+        List<PostDto> posts = postService.getPostsWithFiltering(search);
         model.addAttribute("posts", posts);
 
         Paging paging = new Paging(1, 5, false, false);
         model.addAttribute("paging", paging);
 
-        model.addAttribute("search", "");
+        model.addAttribute("search", search);
         return "posts";
     }
 
@@ -58,31 +59,95 @@ public class PostController {
             @RequestParam("image") MultipartFile image,
             @RequestParam("tags") String tags,
             @RequestParam("text") String text,
-            RedirectAttributes redirectAttributes) throws IOException {
-        log.info("createPost: title=" + title);
-        if (image == null || image.isEmpty()) {
-            log.info("createPost: image is null or empty");
-        } else {
-            log.info("createPost: image name=" + image.getOriginalFilename());
-        }
-//         Преобразуем строку тегов в список
-        List<Tag> tagList = Arrays.stream(tags.split(","))
-                .map(String::trim)
-                .map(String::toLowerCase)
-                .filter(s -> !s.isEmpty())
-                .distinct()
-                .map(s -> {
-                    Tag tag = new Tag();
-                    tag.setName(s);
-                    return tag;
-                })
-                .collect(Collectors.toList());
+            RedirectAttributes redirectAttributes) {
 
         // Создаем пост
-        PostDto post = postService.createPost(title, text, image, tagList);
+        PostDto post = postService.createPost(title, text, image, tags);
 
 //         Добавляем ID в redirect атрибуты
         redirectAttributes.addAttribute("id", post.id());
         return "redirect:/posts/{id}";
+    }
+
+    @PostMapping(value = "/{id}/like")
+    public String createLike(
+            @PathVariable("id") Long postId,
+            @RequestParam("like") Boolean isLike,
+            RedirectAttributes redirectAttributes) {
+
+        PostDto post = postService.managerLikesCount(postId, isLike);
+        redirectAttributes.addAttribute("id", post.id());
+        return "redirect:/posts/{id}";
+    }
+
+    @GetMapping(value = "/{id}/edit")
+    public String editPost(
+            @PathVariable("id") Long postId,
+            Model model,
+            RedirectAttributes redirectAttributes) {
+        PostDto post = postService.getPost(postId);
+        model.addAttribute("post", post);
+        redirectAttributes.addAttribute("id", post.id());
+        return "add-post";
+    }
+
+    @PostMapping("/{id}")
+    public String createPostWithId(
+            @PathVariable("id") Long postId,
+            @RequestParam("title") String title,
+            @RequestParam("image") MultipartFile image,
+            @RequestParam("tags") String tags,
+            @RequestParam("text") String text,
+            RedirectAttributes redirectAttributes) throws IOException {
+        // Создаем пост
+        PostDto post = postService.editPost(postId, title, text, image, tags);
+
+//         Добавляем ID в redirect атрибуты
+        redirectAttributes.addAttribute("id", post.id());
+        return "redirect:/posts/{id}";
+    }
+
+    @PostMapping(value = "/{id}/comments")
+    public String addCommentForPost(
+            @PathVariable("id") Long postId,
+            @RequestParam("text") String comment,
+            Model model,
+            RedirectAttributes redirectAttributes) {
+        PostDto post = postService.addCommentForPost(postId, comment);
+        model.addAttribute("post", post);
+        redirectAttributes.addAttribute("id", post.id());
+        return "redirect:/posts/{id}";
+    }
+
+    @PostMapping(value = "{id}/comments/{commentId}")
+    public String editCommentForPost(
+            @PathVariable("id") Long postId,
+            @PathVariable("commentId") Long commentId,
+            @RequestParam("text") String comment,
+            Model model,
+            RedirectAttributes redirectAttributes) {
+        PostDto post = postService.editCommentForPost(postId, commentId, comment);
+        model.addAttribute("post", post);
+        redirectAttributes.addAttribute("id", post.id());
+        return "redirect:/posts/{id}";
+    }
+
+    @PostMapping(value = "{id}/comments/{commentId}/delete")
+    public String deleteComment(
+            @PathVariable("id") Long postId,
+            @PathVariable("commentId") Long commentId,
+            Model model,
+            RedirectAttributes redirectAttributes) {
+        PostDto post = postService.deleteCommentForPost(postId, commentId);
+        model.addAttribute("post", post);
+        redirectAttributes.addAttribute("id", post.id());
+        return "redirect:/posts/{id}";
+    }
+
+    @PostMapping(value = "{id}/delete")
+    public String deletePost(
+            @PathVariable("id") Long postId) {
+        postService.deletePost(postId);
+        return "redirect:/posts";
     }
 }

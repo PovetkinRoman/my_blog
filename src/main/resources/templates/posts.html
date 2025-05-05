@@ -50,7 +50,7 @@
                     <span th:text="${'&#x2709;&#xFE0F; '+post.comments().size()}"></span>
                 </p>
                 <p>
-                    <span th:each="tag : ${post.tags()}" th:text="${'#'+tag.name+' '}"></span>
+                    <span th:each="tag : ${post.tags()}" th:text="${'#' + tag.name}"></span>
                 </p>
             </td>
         </tr>
