@@ -28,15 +28,14 @@ public class PostController {
     @GetMapping
     public String getAllPost(
             @RequestParam(value = "search", defaultValue = "") String search,
-            @RequestParam(value = "pageSize", defaultValue = "10") Integer pageSize,
             @RequestParam(value = "pageNumber", defaultValue = "1") Integer pageNumber,
+            @RequestParam(value = "pageSize", defaultValue = "10") Integer pageSize,
             Model model) {
-        List<PostDto> posts = postService.getPostsWithFiltering(search);
+        List<PostDto> posts = postService.getPostsWithFiltering(search, pageNumber-1, pageSize);
         model.addAttribute("posts", posts);
 
-        Paging paging = new Paging(1, 5, false, false);
+        Paging paging = new Paging(pageNumber, pageSize, false, false);
         model.addAttribute("paging", paging);
-
         model.addAttribute("search", search);
         return "posts";
     }

@@ -1,5 +1,8 @@
 package ru.rpovetkin.service;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import ru.rpovetkin.controller.model.PostDto;
@@ -32,16 +35,21 @@ public class PostService {
         this.commentRepository = commentRepository;
     }
 
-    public List<PostDto> getPostsWithFiltering(String search) {
-        List<Post> allPost = postRepository.findAll();
+    public List<PostDto> getPostsWithFiltering(String search, Integer pageNumber, Integer pageSize) {
+        Pageable pageable = PageRequest.of(pageNumber, pageSize);
+        Page<Post> allPagePost = postRepository.findAll(pageable);
+
         List<Post> filteredPost = new ArrayList<>();
-        for (Post post : allPost) {
-            List<Tag> filteredTags = post.getTags().stream()
-                    .filter(tag -> tag.getName().contains(search))
-                    .toList();
-            if (!filteredTags.isEmpty()) filteredPost.add(post);
+        if (!search.isEmpty()) {
+            for (Post post : allPagePost) {
+                List<Tag> filteredTags = post.getTags().stream()
+                        .filter(tag -> tag.getName().contains(search))
+                        .toList();
+                if (!filteredTags.isEmpty()) filteredPost.add(post);
+            }
+            return filteredPost.stream().map(PostDto::new).toList();
         }
-        return filteredPost.stream().map(PostDto::new).toList();
+        return allPagePost.getContent().stream().map(PostDto::new).toList();
     }
 
     public PostDto getPost(Long id) {
