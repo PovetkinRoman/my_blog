@@ -1,3 +1,4 @@
+
 insert into posts(id, title, text, imagePath, likesCount) values (1, 'title1', 'text1', 'imagePath1', 30);
 insert into posts(id, title, text, imagePath, likesCount) values (2, 'title2', 'text2', 'imagePath2', 2);
 insert into posts(id, title, text, imagePath, likesCount) values (3, 'title3', 'text3', 'imagePath3', 15);
