@@ -18,8 +18,8 @@ public class FileStorageService {
     private static final String UPLOAD_DIR = "uploads/images";
 
     public String storeFile(MultipartFile file) {
-        if (file.isEmpty()) {
-            return null;
+        if (file == null || file.isEmpty()) {
+            throw new IllegalArgumentException("storeFile: file null or empty");
         }
         try {
             // Получаем абсолютный путь к директории

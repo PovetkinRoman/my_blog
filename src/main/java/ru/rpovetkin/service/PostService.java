@@ -1,6 +1,5 @@
 package ru.rpovetkin.service;
 
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -35,13 +34,18 @@ public class PostService {
         this.commentRepository = commentRepository;
     }
 
+    public PostDto getPost(Long id) {
+        Post post = postRepository.findById(id).orElseGet(Post::new);
+        return new PostDto(post);
+    }
+
     public List<PostDto> getPostsWithFiltering(String search, Integer pageNumber, Integer pageSize) {
         Pageable pageable = PageRequest.of(pageNumber, pageSize);
-        Page<Post> allPagePost = postRepository.findAll(pageable);
+        List<Post> posts = postRepository.findAll(pageable).getContent();
 
         List<Post> filteredPost = new ArrayList<>();
         if (!search.isEmpty()) {
-            for (Post post : allPagePost) {
+            for (Post post : posts) {
                 List<Tag> filteredTags = post.getTags().stream()
                         .filter(tag -> tag.getName().contains(search))
                         .toList();
@@ -49,12 +53,7 @@ public class PostService {
             }
             return filteredPost.stream().map(PostDto::new).toList();
         }
-        return allPagePost.getContent().stream().map(PostDto::new).toList();
-    }
-
-    public PostDto getPost(Long id) {
-        Post post = postRepository.findById(id).get();
-        return new PostDto(post);
+        return posts.stream().map(PostDto::new).toList();
     }
 
     public PostDto createPost(String title, String text, MultipartFile image, String tags) {
@@ -96,6 +95,9 @@ public class PostService {
     }
 
     public PostDto addCommentForPost(Long postId, String commentText) {
+        if (commentText == null || commentText.isEmpty()) {
+            throw new IllegalArgumentException("Comment text is null or empty");
+        }
         Post post = postRepository.findById(postId).get();
         List<Comment> comments = post.getComments();
         Comment comment = new Comment();
@@ -107,6 +109,9 @@ public class PostService {
     }
 
     public PostDto editCommentForPost(Long postId, Long commentId, String commentText) {
+        if (commentText == null || commentText.isEmpty()) {
+            throw new IllegalArgumentException("Comment text is null or empty");
+        }
         Comment commentEdit = commentRepository.findById(commentId).get();
         commentEdit.setText(commentText);
         commentRepository.save(commentEdit);
