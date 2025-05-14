@@ -5,7 +5,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
-import ru.rpovetkin.config.DataSourceConfiguration;
+import ru.rpovetkin.config.JpaConfiguration;
 import ru.rpovetkin.repository.entity.Comment;
 import ru.rpovetkin.repository.entity.Post;
 import ru.rpovetkin.repository.entity.Tag;
@@ -16,17 +16,13 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-@SpringJUnitConfig(classes = {DataSourceConfiguration.class, PostRepository.class})
+@SpringJUnitConfig(classes = {JpaConfiguration.class})
 @TestPropertySource(locations = "classpath:test-application.properties")
 class PostRepositoryTest {
 
     @Autowired
     private PostRepository postRepository;
 
-    @BeforeEach
-    void setUp() {
-        initPosts();
-    }
 
     @Test
     void save_shouldAddPostToDatabase() {
@@ -49,7 +45,7 @@ class PostRepositoryTest {
         Post post = posts.getFirst();
         System.out.println(post.getText());
         assertEquals(1L, post.getId());
-        assertEquals("Title 1", post.getTitle());
+        assertEquals("title1", post.getTitle());
     }
 
     @Test

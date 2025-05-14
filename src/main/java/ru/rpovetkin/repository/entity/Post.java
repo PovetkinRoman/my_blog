@@ -27,4 +27,15 @@ public class Post {
     private List<Comment> comments = new ArrayList<>();
     @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
     private List<Tag> tags = new ArrayList<>();
+
+    @Override
+    public String toString() {
+        return "Post{" +
+                "id=" + id +
+                ", title='" + title + '\'' +
+                ", text='" + text + '\'' +
+                ", imagePath='" + imagePath + '\'' +
+                ", likesCount=" + likesCount +
+                '}';
+    }
 }

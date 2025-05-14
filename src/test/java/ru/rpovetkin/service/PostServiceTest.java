@@ -1,6 +1,5 @@
 package ru.rpovetkin.service;
 
-import ru.rpovetkin.config.TestConfig;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -14,6 +13,7 @@ import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.web.multipart.MultipartFile;
+import ru.rpovetkin.config.TestConfig;
 import ru.rpovetkin.controller.model.PostDto;
 import ru.rpovetkin.repository.CommentRepository;
 import ru.rpovetkin.repository.PostRepository;
@@ -22,7 +22,10 @@ import ru.rpovetkin.repository.entity.Post;
 import ru.rpovetkin.repository.entity.Tag;
 
 import java.io.IOException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
@@ -30,7 +33,6 @@ import static org.mockito.Mockito.*;
 @ExtendWith({SpringExtension.class})
 @ContextConfiguration(classes = TestConfig.class)
 class PostServiceTest {
-
     @Autowired
     PostRepository postRepository;
 

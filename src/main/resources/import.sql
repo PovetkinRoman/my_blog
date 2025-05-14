@@ -1,7 +1,7 @@
 
-insert into posts(id, title, text, imagePath, likesCount) values (1, 'title1', 'text1', 'imagePath1', 30);
-insert into posts(id, title, text, imagePath, likesCount) values (2, 'title2', 'text2', 'imagePath2', 2);
-insert into posts(id, title, text, imagePath, likesCount) values (3, 'title3', 'text3', 'imagePath3', 15);
+insert into posts(title, text, imagePath, likesCount) values ('title1', 'text1', 'imagePath1', 30);
+insert into posts(title, text, imagePath, likesCount) values ('title2', 'text2', 'imagePath2', 2);
+insert into posts(title, text, imagePath, likesCount) values ('title3', 'text3', 'imagePath3', 15);
 
 insert into comments(post_id, text) values (1, 'comments1Forpost_id1');
 insert into comments(post_id, text) values (1, 'comments2Forpost_id1');
