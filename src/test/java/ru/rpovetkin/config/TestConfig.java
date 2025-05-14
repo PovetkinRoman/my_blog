@@ -1,4 +1,4 @@
-package config;
+package ru.rpovetkin.config;
 
 import org.mockito.Mockito;
 import org.springframework.context.annotation.Bean;

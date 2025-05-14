@@ -1,6 +1,6 @@
 package ru.rpovetkin.service;
 
-import config.TestConfig;
+import ru.rpovetkin.config.TestConfig;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -48,9 +48,6 @@ class PostServiceTest {
         Mockito.reset(postRepository);
         Mockito.reset(fileStorageService);
     }
-
-    //        assertThrows(RuntimeException.class, () -> postService.getPost(1L));
-//        verify(postRepository, never()).save(any());
 
     @Test
     void testPostFindByIdSuccess() {

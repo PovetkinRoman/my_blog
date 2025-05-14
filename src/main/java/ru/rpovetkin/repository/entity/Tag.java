@@ -14,8 +14,10 @@ public class Tag {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne
     @JoinColumn(name = "post_id")
     private Post post;
     private String name;
+
+    public Tag(Post post, String name) {}
 }

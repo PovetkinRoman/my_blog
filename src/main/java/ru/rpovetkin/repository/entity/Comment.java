@@ -18,4 +18,6 @@ public class Comment {
     @JoinColumn(name = "post_id")
     private Post post;
     private String text;
+
+    public Comment(Post post, String text) {}
 }
