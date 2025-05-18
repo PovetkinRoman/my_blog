@@ -1,8 +1,8 @@
 package ru.rpovetkin.controller.model;
 
 import org.springframework.web.multipart.MultipartFile;
-import ru.rpovetkin.repository.entity.Post;
-import ru.rpovetkin.repository.entity.Tag;
+import ru.rpovetkin.dao.entity.Post;
+import ru.rpovetkin.dao.entity.Tag;
 
 import java.util.List;
 import java.util.stream.Collectors;

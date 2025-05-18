@@ -1,4 +1,4 @@
-package ru.rpovetkin.repository.entity;
+package ru.rpovetkin.dao.entity;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

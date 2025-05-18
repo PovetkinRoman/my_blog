@@ -1,7 +1,19 @@
 package ru.rpovetkin.repository;
 
-import org.springframework.data.jpa.repository.JpaRepository;
-import ru.rpovetkin.repository.entity.Post;
+import ru.rpovetkin.dao.entity.Post;
 
-public interface PostRepository extends JpaRepository<Post, Long> {
+import java.util.List;
+
+public interface PostRepository {
+    List<Post> findAll(int page, int size);
+
+    Post findById(Long postId);
+
+    Post saveOrUpdate(Post post);
+
+    void incrementLikes(Long postId);
+
+    void decrementLikes(Long postId);
+
+    void deleteById(Long postId);
 }

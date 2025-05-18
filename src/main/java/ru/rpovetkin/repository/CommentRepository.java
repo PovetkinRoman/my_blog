@@ -1,7 +1,10 @@
 package ru.rpovetkin.repository;
 
-import org.springframework.data.jpa.repository.JpaRepository;
-import ru.rpovetkin.repository.entity.Comment;
+import ru.rpovetkin.dao.entity.Comment;
 
-public interface CommentRepository extends JpaRepository<Comment, Long> {
+public interface CommentRepository {
+    void save(Long postId, Comment comment);
+    void update(Long commentId, String text);
+    void delete(Long commentId);
+    void deleteByPostId(Long postId);
 }

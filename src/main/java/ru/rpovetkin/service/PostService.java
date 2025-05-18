@@ -1,17 +1,15 @@
 package ru.rpovetkin.service;
 
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import ru.rpovetkin.controller.model.PostDto;
+import ru.rpovetkin.dao.entity.Comment;
+import ru.rpovetkin.dao.entity.Post;
+import ru.rpovetkin.dao.entity.Tag;
 import ru.rpovetkin.repository.CommentRepository;
 import ru.rpovetkin.repository.PostRepository;
-import ru.rpovetkin.repository.entity.Comment;
-import ru.rpovetkin.repository.entity.Post;
-import ru.rpovetkin.repository.entity.Tag;
+import ru.rpovetkin.repository.TagRepository;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -22,27 +20,29 @@ import java.util.stream.Collectors;
 public class PostService {
     private static final Logger log = Logger.getLogger(PostService.class.getName());
 
-    private final PostRepository postRepository;
     private final FileStorageService fileStorageService;
+    private final PostRepository postRepository;
     private final CommentRepository commentRepository;
+    private final TagRepository tagRepository;
 
-    public PostService(PostRepository postRepository,
-                       FileStorageService fileStorageService,
-                       CommentRepository commentRepository) {
-        this.postRepository = postRepository;
+    public PostService(FileStorageService fileStorageService,
+                       PostRepository postRepository,
+                       CommentRepository commentRepository,
+                       TagRepository tagRepository) {
         this.fileStorageService = fileStorageService;
+        this.postRepository = postRepository;
         this.commentRepository = commentRepository;
+        this.tagRepository = tagRepository;
     }
 
-    public PostDto getPost(Long id) {
-        Post post = postRepository.findById(id).orElseGet(Post::new);
+    public PostDto getPost(Long postId) {
+        Post post = postRepository.findById(postId);
         return new PostDto(post);
     }
 
     public List<PostDto> getPostsWithFiltering(String search, Integer pageNumber, Integer pageSize) {
-        Pageable pageable = PageRequest.of(pageNumber, pageSize);
-        List<Post> posts = postRepository.findAll(pageable).getContent();
-
+        List<Post> posts = postRepository.findAll(pageNumber, pageSize);
+        System.out.println("getPostsWithFiltering: =" + posts);
         List<Post> filteredPost = new ArrayList<>();
         if (!search.isEmpty()) {
             for (Post post : posts) {
@@ -60,7 +60,6 @@ public class PostService {
         // Сохраняем изображение
         String imagePath = fileStorageService.storeFile(image);
 
-        // Создаем и сохраняем пост
         Post post = new Post();
         post.setTitle(title);
         post.setText(text);
@@ -68,12 +67,12 @@ public class PostService {
         List<Tag> tagList = validateTags(tags, post);
         post.setTags(tagList);
 
-        Post savedPost = postRepository.save(post);
+        Post savedPost = postRepository.saveOrUpdate(post);
         return new PostDto(savedPost);
     }
 
-    public PostDto editPost(Long postId, String title, String text, MultipartFile image, String tags) throws IOException {
-        Post post = postRepository.findById(postId).get();
+    public PostDto editPost(Long postId, String title, String text, MultipartFile image, String tags) {
+        Post post = postRepository.findById(postId);
 
         String imagePath = fileStorageService.storeFile(image);
         if (imagePath != null) post.setImagePath(imagePath);
@@ -83,52 +82,46 @@ public class PostService {
         List<Tag> tagsList = validateTags(tags, post);
         post.setTags(tagsList);
 
-        Post savedPost = postRepository.save(post);
+        Post savedPost = postRepository.saveOrUpdate(post);
         return new PostDto(savedPost);
     }
 
-    public PostDto managerLikesCount(Long postId, Boolean isLike) {
-        Post post = postRepository.findById(postId).get();
-        post.setLikesCount(isLike ? post.getLikesCount() + 1 : post.getLikesCount() - 1);
-        Post savedPost = postRepository.save(post);
-        return new PostDto(savedPost);
+    public void managerLikesCount(Long postId, Boolean isLike) {
+        if (isLike) {
+            postRepository.incrementLikes(postId);
+        } else {
+            postRepository.decrementLikes(postId);
+        }
     }
 
     public PostDto addCommentForPost(Long postId, String commentText) {
         if (commentText == null || commentText.isEmpty()) {
             throw new IllegalArgumentException("Comment text is null or empty");
         }
-        Post post = postRepository.findById(postId).get();
-        List<Comment> comments = post.getComments();
         Comment comment = new Comment();
         comment.setText(commentText);
-        comment.setPost(post);
-        comments.add(comment);
-        postRepository.save(post);
-        return new PostDto(post);
+        commentRepository.save(postId, comment);
+
+        return new PostDto(postRepository.findById(postId));
     }
 
     public PostDto editCommentForPost(Long postId, Long commentId, String commentText) {
         if (commentText == null || commentText.isEmpty()) {
             throw new IllegalArgumentException("Comment text is null or empty");
         }
-        Comment commentEdit = commentRepository.findById(commentId).get();
-        commentEdit.setText(commentText);
-        commentRepository.save(commentEdit);
-        Post post = postRepository.findById(postId).get();
+        commentRepository.update(commentId, commentText);
+        Post post = postRepository.findById(postId);
         return new PostDto(post);
     }
 
     public PostDto deleteCommentForPost(Long postId, Long commentId) {
-        Post post = postRepository.findById(postId).get();
-        List<Comment> comments = post.getComments().stream()
-                .filter(c -> c.getId().equals(commentId))
-                .toList();
-        post.getComments().remove(comments.get(0));
-        return new PostDto(postRepository.save(post));
+        commentRepository.delete(commentId);
+        return new PostDto(postRepository.findById(postId));
     }
 
     public void deletePost(Long postId) {
+        commentRepository.deleteByPostId(postId);
+        tagRepository.deleteByPostId(postId);
         postRepository.deleteById(postId);
     }
 

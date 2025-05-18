@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import ru.rpovetkin.controller.model.PostDto;
-import ru.rpovetkin.repository.entity.Paging;
+import ru.rpovetkin.dao.entity.Paging;
 import ru.rpovetkin.service.PostService;
 
 import java.io.IOException;
@@ -31,7 +31,7 @@ public class PostController {
             @RequestParam(value = "pageNumber", defaultValue = "1") Integer pageNumber,
             @RequestParam(value = "pageSize", defaultValue = "10") Integer pageSize,
             Model model) {
-        List<PostDto> posts = postService.getPostsWithFiltering(search, pageNumber-1, pageSize);
+        List<PostDto> posts = postService.getPostsWithFiltering(search, pageNumber - 1, pageSize);
         model.addAttribute("posts", posts);
 
         Paging paging = new Paging(pageNumber, pageSize, false, false);
@@ -60,10 +60,7 @@ public class PostController {
             @RequestParam("text") String text,
             RedirectAttributes redirectAttributes) {
 
-        // Создаем пост
         PostDto post = postService.createPost(title, text, image, tags);
-
-//         Добавляем ID в redirect атрибуты
         redirectAttributes.addAttribute("id", post.id());
         return "redirect:/posts/{id}";
     }
@@ -74,8 +71,8 @@ public class PostController {
             @RequestParam("like") Boolean isLike,
             RedirectAttributes redirectAttributes) {
 
-        PostDto post = postService.managerLikesCount(postId, isLike);
-        redirectAttributes.addAttribute("id", post.id());
+        postService.managerLikesCount(postId, isLike);
+        redirectAttributes.addAttribute("id", postId);
         return "redirect:/posts/{id}";
     }
 
@@ -98,10 +95,9 @@ public class PostController {
             @RequestParam("tags") String tags,
             @RequestParam("text") String text,
             RedirectAttributes redirectAttributes) throws IOException {
-        // Создаем пост
+
         PostDto post = postService.editPost(postId, title, text, image, tags);
 
-//         Добавляем ID в redirect атрибуты
         redirectAttributes.addAttribute("id", post.id());
         return "redirect:/posts/{id}";
     }

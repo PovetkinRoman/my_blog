@@ -1,6 +1,5 @@
-package ru.rpovetkin.repository.entity;
+package ru.rpovetkin.dao.entity;
 
-import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -8,16 +7,20 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@Entity
-@Table(name = "tags")
 public class Tag {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+
     private Long id;
-    @ManyToOne
-    @JoinColumn(name = "post_id")
     private Post post;
     private String name;
 
     public Tag(Post post, String name) {}
+
+    @Override
+    public String toString() {
+        return "Tag{" +
+                "id=" + id +
+                ", post=" + post.getId() +
+                ", name='" + name + '\'' +
+                '}';
+    }
 }

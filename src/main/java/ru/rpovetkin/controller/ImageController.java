@@ -30,7 +30,7 @@ public class ImageController {
     public ResponseEntity<Resource> getImage(@PathVariable(name = "id") Long id) {
         try {
             PostDto post = postService.getPost(id);
-            log.fine("getImage: post_id= " + id + "post image path=" + post.imagePath());
+            log.info("getImage: post_id= " + id + "post image path=" + post.imagePath());
             Resource file = fileStorageService.getFile(post.imagePath());
             return ResponseEntity.ok()
                     .contentType(MediaType.IMAGE_JPEG)
