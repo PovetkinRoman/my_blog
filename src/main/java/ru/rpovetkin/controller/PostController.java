@@ -94,7 +94,7 @@ public class PostController {
             @RequestParam("image") MultipartFile image,
             @RequestParam("tags") String tags,
             @RequestParam("text") String text,
-            RedirectAttributes redirectAttributes) throws IOException {
+            RedirectAttributes redirectAttributes) {
 
         PostDto post = postService.editPost(postId, title, text, image, tags);
 
@@ -109,6 +109,7 @@ public class PostController {
             Model model,
             RedirectAttributes redirectAttributes) {
         PostDto post = postService.addCommentForPost(postId, comment);
+        System.out.println(post);
         model.addAttribute("post", post);
         redirectAttributes.addAttribute("id", post.id());
         return "redirect:/posts/{id}";

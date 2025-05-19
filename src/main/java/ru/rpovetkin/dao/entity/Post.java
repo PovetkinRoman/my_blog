@@ -31,4 +31,13 @@ public class Post {
         this.imagePath = imagePath;
         this.likesCount = likesCount;
     }
+
+    public Post(String title, String text, String imagePath, int likesCount, List<Comment> comments, List<Tag> tags) {
+        this.title = title;
+        this.text = text;
+        this.imagePath = imagePath;
+        this.likesCount = likesCount;
+        this.comments = comments;
+        this.tags = tags;
+    }
 }

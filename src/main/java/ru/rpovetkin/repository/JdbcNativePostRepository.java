@@ -96,53 +96,6 @@ public class JdbcNativePostRepository implements PostRepository {
                 .collect(Collectors.toList());
     }
 
-//    @Override
-//    public List<Post> findAll() {
-//        Map<Long, Post> postMap = new LinkedHashMap<>();
-//
-//        jdbcTemplate.query(
-//                "SELECT p.id AS post_id, p.title, p.text, p.image_path, p.likes_count, " +
-//                        "c.id AS comment_id, c.text AS comment_text, " +
-//                        "t.id AS tag_id, t.name AS tag_name " +
-//                        "FROM Post p " +
-//                        "LEFT JOIN Comment c ON p.id = c.post_id " +
-//                        "LEFT JOIN Tag t ON p.id = t.post_id " +
-//                        "ORDER BY p.id",
-//                rs -> {
-//                    Long postId = rs.getLong("post_id");
-//
-//                    Post post = postMap.computeIfAbsent(postId, id ->
-//                            {
-//                                try {
-//                                    return new Post(
-//                                            id,
-//                                            rs.getString("title"),
-//                                            rs.getString("text"),
-//                                            rs.getString("image_path"),
-//                                            rs.getInt("likes_count")
-//                                    );
-//                                } catch (SQLException e) {
-//                                    throw new RuntimeException(e);
-//                                }
-//                            }
-//                    );
-//
-//                    long commentId = rs.getLong("comment_id");
-//                    if (commentId != 0L) {
-//                        Comment comment = new Comment(commentId, post, rs.getString("comment_text"));
-//                        post.getComments().add(comment);
-//                    }
-//
-//                    long tagId = rs.getLong("tag_id");
-//                    if (tagId != 0L) {
-//                        Tag tag = new Tag(tagId, post, rs.getString("tag_name"));
-//                        post.getTags().add(tag);
-//                    }
-//                }
-//        );
-//        return new ArrayList<>(postMap.values());
-//    }
-
     public Post findById(Long postId) {
         String sql = """
                 SELECT 

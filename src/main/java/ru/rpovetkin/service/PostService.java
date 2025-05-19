@@ -37,6 +37,9 @@ public class PostService {
 
     public PostDto getPost(Long postId) {
         Post post = postRepository.findById(postId);
+        if (post == null) {
+            throw new IllegalArgumentException("post is not found");
+        }
         return new PostDto(post);
     }
 

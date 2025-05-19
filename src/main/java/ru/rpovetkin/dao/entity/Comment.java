@@ -21,7 +21,6 @@ public class Comment {
     public String toString() {
         return "Comment{" +
                 "id=" + id +
-                ", post=" + post.getId() +
                 ", text='" + text + '\'' +
                 '}';
     }
