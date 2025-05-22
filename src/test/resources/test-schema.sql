@@ -1,24 +1,26 @@
 -- Таблица с пользователями
+DROP TABLE IF EXISTS Post;
 CREATE TABLE Post
 (
-    id          BIGINT PRIMARY KEY AUTO_INCREMENT,
+    id          BIGINT PRIMARY KEY,
     title       VARCHAR(255),
     text        TEXT,
     image_path  VARCHAR(255),
     likes_count INT
 );
 
+-- insert into Post(id, title, text, image_path, likes_count)
+-- values (1, 'title1', 'text1', '1746438946080.jpg', 30);
 -- insert into Post(title, text, image_path, likes_count)
--- values ('title1', 'text1', '1746438946080.jpg', 30);
--- insert into Post(title, text, image_path, likes_count)
--- values ('title2', 'text2', '1746438946080.jpg', 2);
+-- values (2, 'title2', 'text2', '1746438946080.jpg', 2);
 -- insert into Post(title, text, image_path, likes_count)
 -- values ('title3', 'text3', '1746438946080.jpg', 15);
 
+DROP TABLE IF EXISTS Comment;
 CREATE TABLE Comment
 (
 
-    id      BIGINT PRIMARY KEY AUTO_INCREMENT,
+    id      BIGINT PRIMARY KEY,
     text    TEXT,
     post_id BIGINT,
     FOREIGN KEY (post_id) REFERENCES Post (id) -- ON DELETE CASCADE
@@ -36,10 +38,10 @@ CREATE TABLE Comment
 -- values (3, 'comments2Forpost_id3');
 -- insert into Comment(post_id, text)
 -- values (3, 'comments3Forpost_id3');
-
+DROP TABLE IF EXISTS Tag;
 CREATE TABLE Tag
 (
-    id      BIGINT PRIMARY KEY AUTO_INCREMENT,
+    id      BIGINT PRIMARY KEY,
     name    VARCHAR(255),
     post_id BIGINT,
     FOREIGN KEY (post_id) REFERENCES Post (id) ON DELETE CASCADE

@@ -6,7 +6,7 @@
 </head>
 
 <body>
-    <form method="GET" action="/posts/add">
+    <form method="GET" action="/my-blog/posts/add">
         <button style="float:right;">ДОБАВИТЬ ПОСТ</button>
     </form>
     <table style="width:50%;margin-left:auto;margin-right:auto;">
@@ -38,20 +38,20 @@
         </tr>
         <tr th:each="post : ${posts}">
             <td style="border-bottom:thin solid;">
-                <h2 th:text="${post.getTitle()}"></h2>
+                <h2 th:text="${post.title()}"></h2>
                 <p>
-                    <a th:href="${'/posts/'+post.getId()}">
-                        <img height="300" th:src="${'http://localhost:8080/images/'+post.getId()}">
+                    <a th:href="${'/my-blog/posts/'+post.id()}">
+                        <img height="200" width="300" th:src="${'http://localhost:8080/my-blog/images/'+post.id()}">
                     </a>
                 </p>
-                <p th:text="${post.getText()}"></p>
+                <p th:text="${post.text()}"></p>
                 <p>
-                    <span th:text="${'&#x1F44D; '+post.getLikesCount()}"></span>
-                    <span th:text="${'&#x2709;&#xFE0F; '+post.getComments().size()}"></span>
+                    <span th:text="${'&#x1F44D; '+post.likesCount()}"></span>
+                    <span th:text="${'&#x2709;&#xFE0F; '+post.comments().size()}"></span>
                 </p>
-<!--                <p>-->
-<!--                    <span th:each="tag : ${post.getTags()}" th:text="${'#'+tag+' '}"></span>-->
-<!--                </p>-->
+                <p>
+                    <span th:each="tag : ${post.tags()}" th:text="${'#' + tag.name}"></span>
+                </p>
             </td>
         </tr>
     </table>
