@@ -3,10 +3,9 @@ package ru.rpovetkin.repository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.test.context.TestPropertySource;
-import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
-import ru.rpovetkin.config.DataSourceTestConfiguration;
 import ru.rpovetkin.dao.entity.Comment;
 import ru.rpovetkin.dao.entity.Post;
 import ru.rpovetkin.dao.entity.Tag;
@@ -16,11 +15,9 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-@SpringJUnitConfig(classes = {DataSourceTestConfiguration.class,
-        JdbcNativePostRepository.class,
-        JdbcNativeCommentRepository.class})
-@TestPropertySource(locations = "classpath:test-application.properties")
-class PostRepositoryTest {
+@SpringBootTest
+@AutoConfigureMockMvc
+class PostRepositoryIntegrationTest {
 
     @Autowired
     private PostRepository postRepository;
@@ -36,15 +33,6 @@ class PostRepositoryTest {
         jdbcTemplate.execute("DELETE FROM Comment");
         jdbcTemplate.execute("DELETE FROM Tag");
         jdbcTemplate.execute("DELETE FROM Post");
-
-        jdbcTemplate.execute("insert into Post(id, title, text, image_path, likes_count) values (1, 'title1', 'This is a test post content', '/images/test.jpg', 10)");
-        jdbcTemplate.execute("insert into Post(id, title, text, image_path, likes_count) values (2, 'Title 2', 'Text 2', '/img2.jpg', 20)");
-        jdbcTemplate.execute("insert into Comment(id, post_id, text) values (1, 1, 'comments1Forpost_id1')");
-        jdbcTemplate.execute("insert into Comment(id, post_id, text) values (2, 2, 'comments1Forpost_id2')");
-        jdbcTemplate.execute("insert into Comment(id, post_id, text) values (3, 2, 'comments2Forpost_id2')");
-        jdbcTemplate.execute("insert into Tag(id, post_id, name) values (1, 1, 'tags1Forpost_id1')");
-        jdbcTemplate.execute("insert into Tag(id, post_id, name) values (2, 2, 'tags1Forpost_id2')");
-        jdbcTemplate.execute("insert into Tag(id, post_id, name) values (3, 2, 'tags1Forpost_id2')");
     }
 
     @Test
@@ -60,6 +48,10 @@ class PostRepositoryTest {
 
     @Test
     void findAll_shouldReturnAllPost() {
+        Post post1 = createPost(null, "title1", "text1", "1746438946080.jpg", 30, new ArrayList<>(), new ArrayList<>());
+        postRepository.saveOrUpdate(post1);
+        Post post2 = createPost(null, "title2", "text2", "1746438946080.jpg", 2, new ArrayList<>(), new ArrayList<>());
+        postRepository.saveOrUpdate(post2);
         List<Post> all = postRepository.findAll(0, 10);
 
         assertNotNull(all);
@@ -71,6 +63,10 @@ class PostRepositoryTest {
 
     @Test
     void deleteById_shouldRemoveCommentFromDatabase() {
+        Post post1 = createPost(null, "title1", "text1", "1746438946080.jpg", 30, new ArrayList<>(), new ArrayList<>());
+        postRepository.saveOrUpdate(post1);
+        Post post2 = createPost(null, "title2", "text2", "1746438946080.jpg", 2, new ArrayList<>(), new ArrayList<>());
+        postRepository.saveOrUpdate(post2);
         Long postId = postRepository.findAll(0, 10).getFirst().getId();
         commentRepository.deleteByPostId(postId);
         Post post = postRepository.findById(postId);

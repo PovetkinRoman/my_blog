@@ -1,59 +1,21 @@
--- Таблица с пользователями
-CREATE TABLE Post
-(
-    id          BIGINT PRIMARY KEY AUTO_INCREMENT,
-    title       VARCHAR(255),
-    text        TEXT,
-    image_path  VARCHAR(255),
-    likes_count INT
+CREATE TABLE IF NOT EXISTS Post (
+                                    id BIGINT PRIMARY KEY AUTO_INCREMENT,
+                                    title VARCHAR(255) NOT NULL,
+                                    text TEXT NOT NULL,
+                                    image_path VARCHAR(255),
+                                    likes_count INT DEFAULT 0
 );
 
--- insert into Post(title, text, image_path, likes_count)
--- values ('title1', 'text1', '1746438946080.jpg', 30);
--- insert into Post(title, text, image_path, likes_count)
--- values ('title2', 'text2', '1746438946080.jpg', 2);
--- insert into Post(title, text, image_path, likes_count)
--- values ('title3', 'text3', '1746438946080.jpg', 15);
-
-CREATE TABLE Comment
-(
-
-    id      BIGINT PRIMARY KEY AUTO_INCREMENT,
-    text    TEXT,
-    post_id BIGINT,
-    FOREIGN KEY (post_id) REFERENCES Post (id) -- ON DELETE CASCADE
-
-);
--- insert into Comment(post_id, text)
--- values (1, 'comments1Forpost_id1');
--- insert into Comment(post_id, text)
--- values (1, 'comments2Forpost_id1');
--- insert into Comment(post_id, text)
--- values (2, 'comments1Forpost_id2');
--- insert into Comment(post_id, text)
--- values (3, 'comments1Forpost_id3');
--- insert into Comment(post_id, text)
--- values (3, 'comments2Forpost_id3');
--- insert into Comment(post_id, text)
--- values (3, 'comments3Forpost_id3');
-
-CREATE TABLE Tag
-(
-    id      BIGINT PRIMARY KEY AUTO_INCREMENT,
-    name    VARCHAR(255),
-    post_id BIGINT,
-    FOREIGN KEY (post_id) REFERENCES Post (id) ON DELETE CASCADE
+CREATE TABLE IF NOT EXISTS Comment (
+                                       id BIGINT PRIMARY KEY AUTO_INCREMENT,
+                                       post_id BIGINT NOT NULL,
+                                       text TEXT NOT NULL,
+                                       FOREIGN KEY (post_id) REFERENCES Post(id) ON DELETE CASCADE
 );
 
--- insert into Tag(post_id, name)
--- values (1, 'tags1Forpost_id1');
--- insert into Tag(post_id, name)
--- values (1, 'tags2Forpost_id1');
--- insert into Tag(post_id, name)
--- values (2, 'tags1Forpost_id2');
--- insert into Tag(post_id, name)
--- values (3, 'tags1Forpost_id3');
--- insert into Tag(post_id, name)
--- values (3, 'tags2Forpost_id3');
--- insert into Tag(post_id, name)
--- values (3, 'tags3Forpost_id3');
+CREATE TABLE IF NOT EXISTS Tag (
+                                   id BIGINT PRIMARY KEY AUTO_INCREMENT,
+                                   post_id BIGINT NOT NULL,
+                                   name VARCHAR(255) NOT NULL,
+                                   FOREIGN KEY (post_id) REFERENCES Post(id) ON DELETE CASCADE
+);

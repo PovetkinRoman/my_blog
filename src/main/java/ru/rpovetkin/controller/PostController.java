@@ -9,15 +9,11 @@ import ru.rpovetkin.controller.model.PostDto;
 import ru.rpovetkin.dao.entity.Paging;
 import ru.rpovetkin.service.PostService;
 
-import java.io.IOException;
 import java.util.List;
-import java.util.logging.Logger;
 
 @Controller
 @RequestMapping("/posts")
 public class PostController {
-
-    private static final Logger log = Logger.getLogger(PostController.class.getName());
 
     private final PostService postService;
 
