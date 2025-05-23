@@ -23,6 +23,14 @@ repositories {
     mavenCentral()
 }
 
+springBoot {
+    buildInfo()  // исполнение задачи по добавлению информации о сборке
+}
+
+bootJar {
+    launchScript()
+}
+
 dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-actuator'
     implementation 'org.springframework.boot:spring-boot-starter-data-jdbc'
