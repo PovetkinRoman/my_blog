@@ -24,7 +24,7 @@ repositories {
 }
 
 springBoot {
-    buildInfo()  // исполнение задачи по добавлению информации о сборке
+    buildInfo()
 }
 
 bootJar {

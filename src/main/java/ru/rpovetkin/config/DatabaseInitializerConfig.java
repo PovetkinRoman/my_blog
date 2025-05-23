@@ -23,7 +23,7 @@ public class DatabaseInitializerConfig {
     private ResourceDatabasePopulator databasePopulator() {
         ResourceDatabasePopulator populator = new ResourceDatabasePopulator();
         populator.addScript(new ClassPathResource("schema.sql"));
-//        populator.addScript(new ClassPathResource("db/data.sql"));
+//        populator.addScript(new ClassPathResource("data.sql"));
         return populator;
     }
 }
