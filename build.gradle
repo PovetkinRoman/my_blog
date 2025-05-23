@@ -28,6 +28,7 @@ springBoot {
 }
 
 bootJar {
+    archiveFileName = 'my_blog_app.jar'
     launchScript()
 }
 
